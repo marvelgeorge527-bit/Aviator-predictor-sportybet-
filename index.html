@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportybet Aviator Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        /* Multiplier Display */
+        .multiplier-section {
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .multiplier-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .multiplier-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .game-status {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Prediction Section */
+        .prediction-section {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .prediction-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .prediction-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .confidence {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stats-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* History Section */
+        .history-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .history-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .history-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .history-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 3px solid #667eea;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        /* Status Indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .status-dot.active {
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .multiplier-value {
+                font-size: 36px;
+            }
+
+            .prediction-value {
+                font-size: 28px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Aviator Predictor</h1>
+            <p>AI-Powered Multiplier Prediction</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Alert Messages -->
+            <div id="alert" class="alert"></div>
+
+            <!-- Multiplier Display -->
+            <div class="multiplier-section">
+                <div class="multiplier-label">CURRENT MULTIPLIER</div>
+                <div class="multiplier-value" id="currentMultiplier">--</div>
+                <div class="game-status" id="gameStatus">Awaiting data...</div>
+            </div>
+
+            <!-- Prediction Section -->
+            <div class="prediction-section">
+                <div class="prediction-label">🤖 AI PREDICTION</div>
+                <div class="prediction-value" id="predictionValue">?</div>
+                <div class="confidence" id="confidenceLevel">Not trained</div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-section">
+                <div class="stats-title">📊 Statistics</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Total Rounds</div>
+                        <div class="stat-value" id="totalRounds">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Average</div>
+                        <div class="stat-value" id="averageMultiplier">--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Median</div>
+                        <div class="stat-value" id="medianMultiplier">--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Max</div>
+                        <div class="stat-value" id="maxMultiplier">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent History -->
+            <div class="history-section">
+                <div class="history-title">📈 Recent Rounds (Last 5)</div>
+                <div class="history-list" id="historyList">
+                    <div class="history-item">--</div>
+                    <div class="history-item">--</div>
+                    <div class="history-item">--</div>
+                    <div class="history-item">--</div>
+                    <div class="history-item">--</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button class="btn-primary" onclick="loadData()">📊 Load Data</button>
+                <button class="btn-primary" onclick="trainModel()">🤖 Train</button>
+                <button class="btn-secondary" onclick="getPrediction()">📈 Predict</button>
+                <button class="btn-secondary" onclick="getStats()">📋 Stats</button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px; font-size: 14px;">Processing...</p>
+            </div>
+
+            <!-- Status Indicator -->
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Ready</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Get user ID
+        let userId = tg.initDataUnsafe?.user?.id || 'default';
+
+        // API base URL
+        const API_BASE = window.location.origin + '/api';
+
+        // Helper functions
+        function showAlert(message, type = 'info') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type} show`;
+            setTimeout(() => alert.classList.remove('show'), 5000);
+        }
+
+        function setLoading(isLoading) {
+            document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+        }
+
+        function updateStatus(text, isActive = true) {
+            document.getElementById('statusText').textContent = text;
+            document.getElementById('statusDot').classList.toggle('active', isActive);
+        }
+
+        // API calls
+        async function loadData() {
+            setLoading(true);
+            updateStatus('Loading data...');
+            try {
+                const response = await fetch(`${API_BASE}/load_data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(`✅ Loaded ${data.rounds} rounds`, 'success');
+                    document.getElementById('totalRounds').textContent = data.rounds;
+                    document.getElementById('averageMultiplier').textContent = data.average.toFixed(2) + 'x';
+                    document.getElementById('medianMultiplier').textContent = data.median.toFixed(2) + 'x';
+                    document.getElementById('maxMultiplier').textContent = data.max.toFixed(2) + 'x';
+                    updateHistoryDisplay(data.history);
+                    updateStatus('Data loaded', true);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                    updateStatus('Ready', false);
+                }
+            } catch (error) {
+                showAlert('Connection error', 'error');
+                updateStatus('Ready', false);
+            }
+            setLoading(false);
+        }
+
+        async function trainModel() {
+            setLoading(true);
+            updateStatus('Training model...');
+            try {
+                const response = await fetch(`${API_BASE}/train`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('✅ Model trained successfully!', 'success');
+                    updateStatus('Model ready', true);
+                } else {
+                    showAlert('Error: ' + data.message, 'error');
+                    updateStatus('Ready', false);
+                }
+            } catch (error) {
+                showAlert('Training failed', 'error');
+                updateStatus('Ready', false);
+            }
+            setLoading(false);
+        }
+
+        async function getPrediction() {
+            setLoading(true);
+            updateStatus('Getting prediction...');
+            try {
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('predictionValue').textContent = data.prediction.toFixed(2) + 'x';
+                    document.getElementById('confidenceLevel').textContent = `Confidence: ${data.confidence}`;
+                    updateStatus('Prediction ready', true);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                    updateStatus('Ready', false);
+                }
+            } catch (error) {
+                showAlert('Prediction failed', 'error');
+                updateStatus('Ready', false);
+            }
+            setLoading(false);
+        }
+
+        async function getStats() {
+            setLoading(true);
+            updateStatus('Loading statistics...');
+            try {
+                const response = await fetch(`${API_BASE}/stats`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('totalRounds').textContent = data.total_rounds;
+                    document.getElementById('averageMultiplier').textContent = data.average.toFixed(2) + 'x';
+                    document.getElementById('medianMultiplier').textContent = data.median.toFixed(2) + 'x';
+                    document.getElementById('maxMultiplier').textContent = data.max.toFixed(2) + 'x';
+                    updateStatus('Stats updated', true);
+                } else {
+                    showAlert('Error: ' + data.error, 'error');
+                    updateStatus('Ready', false);
+                }
+            } catch (error) {
+                showAlert('Failed to get stats', 'error');
+                updateStatus('Ready', false);
+            }
+            setLoading(false);
+        }
+
+        function updateHistoryDisplay(history) {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            const recent = history.slice(-5);
+            recent.forEach(mult => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.textContent = mult.toFixed(2) + 'x';
+                historyList.appendChild(item);
+            });
+        }
+
+        // Initial setup
+        window.addEventListener('load', () => {
+            updateStatus('Ready', true);
+            showAlert('👋 Welcome! Start by loading data.', 'info');
+        });
+    </script>
+</body>
+</html>
